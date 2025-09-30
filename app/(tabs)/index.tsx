@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   RefreshControl,
+  useWindowDimensions,
 } from "react-native";
 import Screen from "@/components/ui/Screen";
 import { Header } from "@/components/ui/Header";
@@ -121,7 +122,7 @@ export default function Dashboard() {
           <KPI label="Steps" value={lastSteps ? `${lastSteps.value}` : "—"} />
         </View>
 
-        {/* Micro charts */}
+        {/* Micro charts (responsive, no overflow) */}
         <Card
           title="Today at a glance"
           subtitle="Mini trends"
@@ -274,7 +275,7 @@ export default function Dashboard() {
   );
 }
 
-/* ---------- Small subcomponents ---------- */
+/* ---------- Subcomponents ---------- */
 
 function KPI({ label, value }: { label: string; value: string }) {
   const t = useAppTheme();
@@ -300,22 +301,50 @@ function TrendLine({
   unit: string;
 }) {
   const t = useAppTheme();
+  const { width: winW } = useWindowDimensions();
+
+  // Available width = screen width - page padding (2×16) - label block (100)
+  // - gaps between label/chart/text (≈ 12 + 8) - card inner padding (2×16)
+  const sparkWidth = Math.max(
+    96,
+    Math.min(220, winW - 16 * 2 - 100 - 12 - 8 - 16 * 2)
+  );
+
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-      <Text style={{ color: t.text, width: 100, fontWeight: "700" }}>
+      {/* Fixed label so chart can shrink safely */}
+      <Text
+        style={{ color: t.text, width: 100, fontWeight: "700" }}
+        numberOfLines={1}
+      >
         {label}
       </Text>
+
       {series.length ? (
         <>
-          <SparkBars data={series} width={160} height={36} color={color} />
-          <Text style={{ color: t.sub, fontSize: 12 }}>
+          <SparkBars
+            data={series}
+            width={sparkWidth}
+            height={36}
+            color={color}
+          />
+          {/* Stats text truncates if needed */}
+          <Text
+            style={{ color: t.sub, fontSize: 12, flexShrink: 1 }}
+            numberOfLines={1}
+          >
             min {Math.min(...series)}
             {unit} • max {Math.max(...series)}
             {unit}
           </Text>
         </>
       ) : (
-        <Text style={{ color: t.sub, fontSize: 12 }}>No data yet</Text>
+        <Text
+          style={{ color: t.sub, fontSize: 12, flexShrink: 1 }}
+          numberOfLines={1}
+        >
+          No data yet
+        </Text>
       )}
     </View>
   );
