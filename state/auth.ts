@@ -1,20 +1,40 @@
 import { create } from "zustand";
-import { storage } from "@/app/_layout";
+
+// simple in-memory + async helpers
+const mem: Record<string, string | null> = {};
+const storage = {
+  async getString(k: string) {
+    return mem[k] ?? null;
+  },
+  async setString(k: string, v: string) {
+    mem[k] = v;
+  },
+  async delete(k: string) {
+    mem[k] = null;
+  },
+};
 
 type User = { id: string; name: string; email: string } | null;
-
 type AuthState = {
   token: string | null;
   user: User;
-  setAuth: (token: string | null, user: User) => void;
+  hydrate: () => Promise<void>;
+  setAuth: (token: string | null, user: User) => Promise<void>;
 };
 
 export const useAuth = create<AuthState>((set) => ({
-  token: storage.getString("token") ?? null,
-  user: (() => { const raw = storage.getString("user"); return raw ? JSON.parse(raw) : null })(),
-  setAuth: (token, user) => {
-    if (token) storage.set("token", token); else storage.delete("token");
-    if (user) storage.set("user", JSON.stringify(user)); else storage.delete("user");
+  token: null,
+  user: null,
+  hydrate: async () => {
+    const token = await storage.getString("token");
+    const raw = await storage.getString("user");
+    set({ token, user: raw ? JSON.parse(raw) : null });
+  },
+  setAuth: async (token, user) => {
+    if (token) await storage.setString("token", token);
+    else await storage.delete("token");
+    if (user) await storage.setString("user", JSON.stringify(user));
+    else await storage.delete("user");
     set({ token, user });
-  }
+  },
 }));

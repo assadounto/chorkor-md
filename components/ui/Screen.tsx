@@ -1,5 +1,12 @@
-import { View } from "react-native";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
+import { View, StyleSheet } from "react-native";
+import { useAppTheme } from "@/theme/useTheme";
+
 export default function Screen({ children }: { children: ReactNode }) {
-  return <View className="flex-1 bg-white dark:bg-zinc-900">{children}</View>;
+  const t = useAppTheme();
+  return (
+    <View style={[styles.root, { backgroundColor: t.bg }]}>{children}</View>
+  );
 }
+
+const styles = StyleSheet.create({ root: { flex: 1 } });

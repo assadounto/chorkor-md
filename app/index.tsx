@@ -1,56 +1,52 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import Screen from "@/components/ui/Screen";
 import { Header } from "@/components/ui/Header";
 import { Link } from "expo-router";
+import Button from "@/components/ui/Button";
 import { useAuth } from "@/state/auth";
+import { useAppTheme } from "@/theme/useTheme";
+import { space, radius } from "@/theme/tokens";
 
 export default function Home() {
   const { user } = useAuth();
+  const t = useAppTheme();
+
   return (
     <Screen>
       <Header title="Chorkor Mobile Doctor" />
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <Text className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Your trusted healthcare companion</Text>
-        <Text className="mt-2 text-zinc-600 dark:text-zinc-300">
-          Get medical advice, order medicines, and track your health — all in one place.
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={[styles.h1, { color: t.text }]}>
+          Your trusted healthcare companion
+        </Text>
+        <Text style={[styles.body, { color: t.sub }]}>
+          Get medical advice, order medicines, and track your health — all in
+          one place.
         </Text>
 
-        <View className="mt-6 gap-3">
+        <View style={styles.grid}>
           <Link href="/symptom-checker" asChild>
-            <TouchableOpacity className="p-4 rounded-2xl bg-brand">
-              <Text className="text-white text-base font-medium">Symptom Checker</Text>
-            </TouchableOpacity>
+            <Button title="Symptom Checker" color="brand" />
           </Link>
-
           <Link href="/consult" asChild>
-            <TouchableOpacity className="p-4 rounded-2xl bg-emerald-500">
-              <Text className="text-white text-base font-medium">Consult a Doctor</Text>
-            </TouchableOpacity>
+            <Button title="Consult a Doctor" color="success" />
           </Link>
-
           <Link href="/pharmacy" asChild>
-            <TouchableOpacity className="p-4 rounded-2xl bg-[#F59E0B]">
-              <Text className="text-white text-base font-medium">Pharmacy & Orders</Text>
-            </TouchableOpacity>
+            <Button title="Pharmacy & Orders" color="warn" />
           </Link>
-
           <Link href="/tracker" asChild>
-            <TouchableOpacity className="p-4 rounded-2xl bg-purple-500">
-              <Text className="text-white text-base font-medium">Health Tracker</Text>
-            </TouchableOpacity>
+            <Button title="Health Tracker" color="purple" />
           </Link>
         </View>
 
-        <Text className="mt-8 text-xs text-zinc-500">
+        <Text style={[styles.note, { color: t.sub }]}>
           *Info only. Not a diagnosis. In emergencies, call local services.
         </Text>
 
         {!user && (
-          <View className="mt-6">
+          <View style={{ marginTop: space.lg }}>
             <Link href="/auth/register" asChild>
-              <TouchableOpacity className="p-3 rounded-xl bg-zinc-200">
-                <Text className="text-center">Create account</Text>
-              </TouchableOpacity>
+              <Button title="Create account" color="neutral" />
             </Link>
           </View>
         )}
@@ -58,3 +54,10 @@ export default function Home() {
     </Screen>
   );
 }
+const styles = StyleSheet.create({
+  container: { padding: space.lg },
+  h1: { fontSize: 24, fontWeight: "800" },
+  body: { marginTop: 8, fontSize: 16, lineHeight: 22 },
+  grid: { marginTop: 24, gap: 12 },
+  note: { marginTop: 24, fontSize: 12 },
+});

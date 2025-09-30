@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text } from "react-native";
 import Screen from "@/components/ui/Screen";
 import { Header } from "@/components/ui/Header";
-import * as Haptics from "expo-haptics";
+import Button from "@/components/ui/Button";
+import { useAppTheme } from "@/theme/useTheme";
+import { space } from "@/theme/tokens";
 
 const QUESTIONS = [
   { id: "fever", q: "Do you have a fever (≥38°C)?" },
@@ -15,12 +17,12 @@ type Answers = Record<string, boolean | null>;
 export default function SymptomChecker() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
+  const t = useAppTheme();
 
   const onPick = (v: boolean) => {
     const key = QUESTIONS[step].id;
     setAnswers((a) => ({ ...a, [key]: v }));
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setTimeout(() => setStep((s) => Math.min(s + 1, QUESTIONS.length)), 120);
+    setTimeout(() => setStep((s) => Math.min(s + 1, QUESTIONS.length)), 100);
   };
 
   const urgent = !!answers["chest_pain"] || !!answers["severe"];
@@ -29,41 +31,74 @@ export default function SymptomChecker() {
   return (
     <Screen>
       <Header title="Symptom Checker" />
-      <View className="p-5 gap-5">
+      <View style={{ padding: space.lg, gap: 12 }}>
         {step < QUESTIONS.length ? (
-          <View className="gap-4">
-            <Text className="text-lg text-zinc-900 dark:text-zinc-100">{QUESTIONS[step].q}</Text>
-            <View className="flex-row gap-3">
-              <TouchableOpacity onPress={() => onPick(true)} className="px-4 py-3 rounded-xl bg-brand">
-                <Text className="text-white">Yes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => onPick(false)} className="px-4 py-3 rounded-xl bg-zinc-200 dark:bg-zinc-700">
-                <Text className="text-zinc-900 dark:text-zinc-100">No</Text>
-              </TouchableOpacity>
+          <>
+            <Text style={{ color: t.text, fontSize: 18 }}>
+              {QUESTIONS[step].q}
+            </Text>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <Button title="Yes" onPress={() => onPick(true)} />
+              <Button
+                title="No"
+                color="neutral"
+                onPress={() => onPick(false)}
+              />
             </View>
-          </View>
+          </>
         ) : (
-          <View className="gap-3">
+          <>
             {urgent ? (
-              <View className="p-4 rounded-2xl bg-red-500">
-                <Text className="text-white font-semibold">Urgent attention recommended</Text>
-                <Text className="text-white/90 mt-1">Breathing difficulty or severe symptoms. Please go to the nearest emergency clinic or call local services.</Text>
+              <View
+                style={{
+                  padding: 16,
+                  borderRadius: 16,
+                  backgroundColor: t.danger,
+                }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "800" }}>
+                  Urgent attention recommended
+                </Text>
+                <Text style={{ color: "#fff", opacity: 0.9, marginTop: 4 }}>
+                  Trouble breathing or severe symptoms. Please go to the nearest
+                  emergency clinic or call local services.
+                </Text>
               </View>
             ) : care ? (
-              <View className="p-4 rounded-2xl bg-amber-500">
-                <Text className="text-white font-semibold">Care soon</Text>
-                <Text className="text-white/90 mt-1">Fever detected. Consider consulting a clinician within 24–48 hours or start a teleconsultation.</Text>
+              <View
+                style={{
+                  padding: 16,
+                  borderRadius: 16,
+                  backgroundColor: t.warn,
+                }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "800" }}>
+                  Care soon
+                </Text>
+                <Text style={{ color: "#fff", opacity: 0.9, marginTop: 4 }}>
+                  Fever detected. Consider consulting a clinician within 24–48
+                  hours or start a teleconsultation.
+                </Text>
               </View>
             ) : (
-              <View className="p-4 rounded-2xl bg-emerald-600">
-                <Text className="text-white font-semibold">Self‑care possible</Text>
-                <Text className="text-white/90 mt-1">Based on your answers, your symptoms don’t suggest an emergency. Rest, hydrate, and monitor. If symptoms worsen, seek care.</Text>
+              <View
+                style={{
+                  padding: 16,
+                  borderRadius: 16,
+                  backgroundColor: t.success,
+                }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "800" }}>
+                  Self-care possible
+                </Text>
+                <Text style={{ color: "#fff", opacity: 0.9, marginTop: 4 }}>
+                  Based on your answers, your symptoms don’t suggest an
+                  emergency. Rest, hydrate, and monitor.
+                </Text>
               </View>
             )}
-            <TouchableOpacity className="mt-4 px-4 py-3 rounded-xl bg-brand">
-              <Text className="text-white text-center">Start a consultation</Text>
-            </TouchableOpacity>
-          </View>
+            <Button title="Start a consultation" />
+          </>
         )}
       </View>
     </Screen>
