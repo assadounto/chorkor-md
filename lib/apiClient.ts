@@ -1,50 +1,20 @@
-import { LOCAL_USERS, type User, MEDICINES, DOCTORS } from "./localData";
-
+import { LOCAL_USERS, type User } from "./localData";
 const db: { users: User[] } = { users: [...LOCAL_USERS] };
-const delay = (ms = 250) => new Promise((res) => setTimeout(res, ms));
+const delay = (ms=250) => new Promise(res=>setTimeout(res, ms));
 
 export async function apiSignIn(email: string, password: string) {
   await delay();
-  const u = db.users.find(
-    (u) =>
-      u.email.toLowerCase() === email.toLowerCase() && u.password === password
-  );
+  const u = db.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
   if (!u) throw new Error("Invalid credentials");
-  return {
-    token: `local.${u.id}.${Date.now()}`,
-    user: { id: u.id, name: u.name, email: u.email },
-  };
+  return { token: `local.${u.id}.${Date.now()}`, user: { id: u.id, name: u.name, email: u.email } };
 }
-
-export async function apiRegister(
-  name: string,
-  email: string,
-  password: string
-) {
+export async function apiRegister(name: string, email: string, password: string) {
   await delay();
-  const exists = db.users.find(
-    (u) => u.email.toLowerCase() === email.toLowerCase()
-  );
+  const exists = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
   if (exists) throw new Error("Email already registered");
-  const id = `u${Math.random().toString(36).slice(2, 8)}`;
+  const id = `u${Math.random().toString(36).slice(2,8)}`;
   const user: User = { id, name, email, password };
   db.users.push(user);
   return { token: `local.${id}.${Date.now()}`, user: { id, name, email } };
 }
 
-export async function apiMedicines() {
-  await delay(150);
-  return MEDICINES;
-}
-export async function apiDoctors() {
-  await delay(150);
-  return DOCTORS;
-}
-
-export async function apiCheckout(payload: any) {
-  await delay(400);
-  return {
-    checkout_url: "https://pay.example.local/preview",
-    reference: "TESTREF",
-  };
-}

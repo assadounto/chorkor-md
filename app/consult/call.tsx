@@ -1,9 +1,9 @@
 import React from "react";
-import { useLocalSearchParams } from "expo-router";
+import { View, Text, Alert } from "react-native";
 import Screen from "@/components/ui/Screen";
 import { Header } from "@/components/ui/Header";
-import { View, Text, Alert } from "react-native";
 import Button from "@/components/ui/Button";
+import { useLocalSearchParams } from "expo-router";
 import { useAppTheme } from "@/theme/useTheme";
 import { space } from "@/theme/tokens";
 
@@ -11,10 +11,7 @@ export default function Call() {
   const { doctor } = useLocalSearchParams<{ doctor?: string }>();
   const t = useAppTheme();
   const start = () =>
-    Alert.alert(
-      "Coming soon",
-      "Video/voice calling will be integrated here (e.g., WebRTC/SDK)."
-    );
+    Alert.alert("Coming soon", "Video/voice calling will be integrated here.");
 
   return (
     <Screen>

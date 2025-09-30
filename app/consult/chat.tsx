@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import Screen from "@/components/ui/Screen";
-import { Header } from "@/components/ui/Header";
 import {
   View,
   Text,
@@ -10,6 +7,9 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
+import Screen from "@/components/ui/Screen";
+import { Header } from "@/components/ui/Header";
+import { useLocalSearchParams } from "expo-router";
 import { useAppTheme } from "@/theme/useTheme";
 import { radius, space } from "@/theme/tokens";
 
@@ -100,6 +100,7 @@ export default function Chat() {
     </Screen>
   );
 }
+
 const styles = StyleSheet.create({
   bubble: { maxWidth: "80%", padding: 12, marginVertical: 6, borderRadius: 16 },
 });

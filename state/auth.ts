@@ -1,34 +1,25 @@
+// state/auth.ts
 import { create } from "zustand";
-
-// simple in-memory + async helpers
-const mem: Record<string, string | null> = {};
-const storage = {
-  async getString(k: string) {
-    return mem[k] ?? null;
-  },
-  async setString(k: string, v: string) {
-    mem[k] = v;
-  },
-  async delete(k: string) {
-    mem[k] = null;
-  },
-};
+import { storage } from "@/lib/storage";
 
 type User = { id: string; name: string; email: string } | null;
 type AuthState = {
   token: string | null;
   user: User;
+  hydrated: boolean; // 👈 new
   hydrate: () => Promise<void>;
   setAuth: (token: string | null, user: User) => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 export const useAuth = create<AuthState>((set) => ({
   token: null,
   user: null,
+  hydrated: false, // 👈 new
   hydrate: async () => {
     const token = await storage.getString("token");
     const raw = await storage.getString("user");
-    set({ token, user: raw ? JSON.parse(raw) : null });
+    set({ token, user: raw ? JSON.parse(raw) : null, hydrated: true }); // 👈 set hydrated
   },
   setAuth: async (token, user) => {
     if (token) await storage.setString("token", token);
@@ -36,5 +27,10 @@ export const useAuth = create<AuthState>((set) => ({
     if (user) await storage.setString("user", JSON.stringify(user));
     else await storage.delete("user");
     set({ token, user });
+  },
+  signOut: async () => {
+    await storage.delete("token");
+    await storage.delete("user");
+    set({ token: null, user: null });
   },
 }));
