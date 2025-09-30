@@ -15,13 +15,6 @@ import { useTracker } from "@/state/tracker";
 import { useReminders } from "@/state/reminders";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
 
 const queryClient = new QueryClient();
 
