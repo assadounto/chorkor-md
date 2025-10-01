@@ -416,7 +416,7 @@ export default function SymptomCheckerChat() {
                     ]}
                   />
                   <View style={{ flexDirection: "row", gap: 8, marginTop: 8 }}>
-                    <Button title="sSesssnd" onPress={onSubmitText} />
+                    <Button title="Send" onPress={onSubmitText} />
                     <Button title="Back" color="neutral" onPress={goPrev} />
                   </View>
                 </View>
