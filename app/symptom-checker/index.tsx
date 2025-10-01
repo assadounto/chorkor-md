@@ -323,7 +323,7 @@ export default function SymptomCheckerChat() {
                       },
                     ]}
                   />
-                  <View style={{ flexDirection: "row", gap: 8, marginTop: 8 }}>
+                  <View style={{  gap: 8, marginTop: 8 }}>
                     <Button title="Send" onPress={onSubmitText} />
                     <Button title="Back" color="neutral" onPress={goPrev} />
                   </View>
@@ -373,7 +373,7 @@ export default function SymptomCheckerChat() {
                       )
                     )}
                   </View>
-                  <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
+                  <View style={{  gap: 8, marginTop: 10 }}>
                     <Button
                       title={
                         canContinueSymptoms ? "Continue" : "Pick at least one"
@@ -469,7 +469,7 @@ export default function SymptomCheckerChat() {
                       )
                     )}
                   </View>
-                  <View style={{ flexDirection: "row", gap: 8, marginTop: 10 }}>
+                  <View style={{  gap: 8, marginTop: 10 }}>
                     <Button
                       title="None"
                       color="neutral"
@@ -498,7 +498,7 @@ export default function SymptomCheckerChat() {
                     color="success"
                     onPress={compute}
                   />
-                  <View style={{ flexDirection: "row", gap: 8 }}>
+                  <View style={{  gap: 8 }}>
                     <Button
                       title="Change answers"
                       color="neutral"
